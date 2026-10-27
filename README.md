@@ -16,7 +16,11 @@ corrección, minimapa que compara la caja del inventario con la extensión estim
 
 - **Corregir**: clic en cualquier caja → formulario con la transcripción correcta, el tipo y el veredicto (correcta, corregida, no es topónimo, ilegible).
 - **Añadir**: botón «＋ Añadir topónimo», se dibuja un rectángulo sobre un rótulo que el lector no detectó y se escribe su texto
-  (tipo, nombre normalizado y nota opcionales). El visor calcula la posición geográfica estimada con la transformación del mapa.
+  (tipo, nombre normalizado y nota opcionales). La caja se orienta con el rótulo: el asa redonda la gira (con Ctrl, de 5 en 5°; también
+  hay un control de ángulo en el formulario), las asas cuadradas ajustan el largo y el alto, y se arrastra para moverla; con Shift,
+  arrastrar a lo largo del rótulo la dibuja ya girada. «Ajustar caja» reabre la edición de un topónimo guardado. El visor calcula la
+  posición geográfica estimada con la transformación del mapa. Cada registro lleva `bbox_px` (envolvente), `poly_px` (las cuatro
+  esquinas: inicio‑arriba, fin‑arriba, fin‑abajo, inicio‑abajo) y `angulo` (grados, antihorario, como el `angle` de las frases leídas).
 - **Guardar**: en claude.ai las correcciones van a la base compartida del artefacto; en GitHub Pages o como archivo local se guardan
   en el navegador de cada persona. En todos los casos se pueden **exportar en JSON** o **enviar a GitHub** con el botón del mismo
   nombre, que abre un *issue* de este repositorio con los registros ya escritos (solo hay que pulsar «Submit new issue»).

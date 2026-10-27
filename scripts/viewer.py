@@ -1,14 +1,14 @@
 """Build the standalone viewer for the mapKurator-style pilot: one HTML with the ten maps, their recognised labels,
 the gazetteer matches and the geocoding result, in the visual system of the Mapoteca Digital.
 
-python3 -I viewer.py  -> ./index.html
+python3 -I viewer.py  -> /home/claude/piloto-toponimos-bnc.html
 """
 import json, base64, io, os, html
 from PIL import Image
 from shapely.geometry import shape, box, mapping
 Image.MAX_IMAGE_PIXELS = None
 
-S = './'
+S = '/tmp/claude-0/-home-claude/132c8f7b-456b-57d4-9103-6cd2bdc34e88/scratchpad/'
 O = S + 'ocrpilot/out/'
 meta = json.load(open(S + 'ocrpilot/maps_meta.json'))
 evals = json.load(open(S + 'ocrpilot/eval.json')) if os.path.exists(S + 'ocrpilot/eval.json') else {}
@@ -32,8 +32,9 @@ for stem in sorted(meta):
         ph.append({'i': i, 't': r['text'], 'c': r['conf'], 's': r['status'], 'n': m.get('name', ''), 'ty': m.get('type', ''), 'hint': m.get('tipo_rotulo'), 'sc': round(m['score'], 0) if m.get('score') is not None else None,
                    'r': m.get('residual_km'), 'lon': m.get('lon'), 'lat': m.get('lat'), 'alt': m.get('alternatives', []),
                    'b': [round(v) for v in r['bbox']], 'p': polys, 'a': r['angle'], 'pl': r.get('pred_lon'), 'pt': r.get('pred_lat')})
-    tiles_idx = json.load(open('./tiles/index.json')) if os.path.exists('./tiles/index.json') else {}
-    maps.append({'stem': stem, 'meta': meta[stem], 'summary': sm, 'img': uri, 'w': W, 'h': H, 'scale': 1.0, 'tiles': tiles_idx.get(stem), 'phrases': ph, 'eval': evals.get(stem)})
+    tiles_idx = json.load(open('/home/claude/tiles/index.json')) if os.path.exists('/home/claude/tiles/index.json') else {}
+    model = {'affine': sm.get('transform'), 'poly2': sm.get('poly2')} if sm.get('transform') else None
+    maps.append({'stem': stem, 'meta': meta[stem], 'summary': {k: v_ for k, v_ in sm.items() if k not in ('transform', 'poly2')}, 'model': model, 'img': uri, 'w': W, 'h': H, 'scale': 1.0, 'tiles': tiles_idx.get(stem), 'phrases': ph, 'eval': evals.get(stem)})
     print(stem, 'image', th.size, len(uri)//1024, 'KB', len(ph), 'phrases')
 
 # regional basemap
@@ -92,15 +93,17 @@ a{color:var(--accent-text)}button,input,select{font:inherit;color:inherit}:focus
 .credits{margin-left:8px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
 .coll{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3);text-decoration:none;white-space:nowrap}
 .coll:hover{color:var(--accent)}
-.dev{font-size:11px;letter-spacing:.4px;color:var(--ink-2);white-space:nowrap}
-.dev-k{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
+.dev{display:flex;flex-direction:column;align-items:flex-end;font-size:11px;letter-spacing:.4px;line-height:1.25;color:var(--ink-2);white-space:nowrap}
+.dev-k{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-3)}
+.dev-ai{color:var(--ink-3)}
+@media (max-width:1180px){.dev-ai{display:none}}
 .tabs{display:flex;gap:2px}
 .tabs button{border:0;background:none;padding:8px 10px;border-bottom:2px solid transparent;color:var(--ink-3);cursor:pointer;font-family:var(--font-ui);font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;line-height:1.1}
 .tabs button:hover{color:var(--accent)}.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
 @media (max-width:1400px){.coll{display:none}}
 @media (max-width:980px){.dev{font-size:10.5px}}
 @media (max-width:980px){.tool .tagline{display:none}}
-@media (max-width:760px){.mast{gap:6px 12px;padding:8px 14px;flex-wrap:wrap}.ccd-name{display:none}.ccd svg{height:28px}.tool{padding-left:12px}.tool h1{font-size:22px}.credits{order:3;margin-left:0;align-items:flex-start;text-align:left}.tabs{margin-left:auto;flex-shrink:0;order:4}.tabs button{padding:6px 8px}}
+@media (max-width:760px){.mast{gap:6px 12px;padding:8px 14px;flex-wrap:wrap}.ccd-name{display:none}.ccd svg{height:28px}.tool{padding-left:12px}.tool h1{font-size:22px}.credits{order:3;margin-left:0;align-items:flex-start;text-align:left;max-width:100%}.dev{align-items:flex-start;white-space:normal}.dev-k{font-size:8.5px;letter-spacing:1.1px}.tabs{margin-left:auto;flex-shrink:0;order:4}.tabs button{padding:6px 8px}}
 .mapsel{display:flex;gap:6px;flex-wrap:wrap;padding:10px 22px;background:var(--panel);border-bottom:1px solid var(--line)}
 .mapsel button{border:1px solid var(--line-strong);background:var(--panel);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:12.5px;color:var(--ink)}
 .mapsel button:hover{border-color:var(--accent)}.mapsel button[aria-pressed="true"]{background:var(--accent);color:var(--panel);border-color:var(--accent)}
@@ -135,18 +138,32 @@ aside{border-left:1px solid var(--line);background:var(--panel);display:flex;fle
 .leaflet-popup-content .ocr{font-family:var(--font-mono);font-size:13px}
 .leaflet-popup-content .k{color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
 .leaflet-popup-content-wrapper{border-radius:4px}
-.cform{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);display:grid;gap:6px}
-.cform input[type=text],.cform select{width:100%;padding:5px 7px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--panel);font-size:13px}
-.cform .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.cform button{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:var(--radius);padding:5px 10px;cursor:pointer;font-size:12.5px}
-.cform button.ghost{background:none;color:var(--accent-text)}
-.cform button:hover{background:var(--accent-dark);color:#fff}
-.cform .meta{font-size:11px;color:var(--ink-3)}
+.cform,.nform{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);display:grid;gap:6px}
+.cform input[type=text],.cform select,.nform input[type=text],.nform select{width:100%;padding:5px 7px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--panel);font-size:13px}
+.cform .row,.nform .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cform button,.nform button{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:var(--radius);padding:5px 10px;cursor:pointer;font-size:12.5px}
+.cform button.ghost,.nform button.ghost{background:none;color:var(--accent-text)}
+.cform button:hover,.nform button:hover{background:var(--accent-dark);color:#fff}
+.cform .meta,.nform .meta{font-size:11px;color:var(--ink-3)}
 .corrbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12.5px;background:var(--panel-2)}
 .corrbar b{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--brand)}
 .corrbar button{border:1px solid var(--line-strong);background:var(--panel);border-radius:var(--radius);padding:4px 10px;cursor:pointer;font-size:12px}
 .corrbar button:hover{border-color:var(--accent)}
 .corrbar .note{flex-basis:100%;color:var(--ink-3);font-size:11.5px}
+.corrbar .note a{display:inline-block;margin:2px 6px 0 0;padding:2px 8px;border:1px solid var(--accent);border-radius:999px;text-decoration:none;font-size:11.5px}
+.corrbar button.on{background:var(--accent);color:var(--panel);border-color:var(--accent)}
+#img.adding .leaflet-container, #img.adding{cursor:crosshair!important}
+#img.adding .leaflet-interactive{pointer-events:none}
+#img.moving .leaflet-container{cursor:move!important}
+.hdl{box-sizing:border-box;border:2px solid #8e44ad;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.35);cursor:grab}
+.hdl.rot::after{content:'↻';display:block;font-size:11px;line-height:14px;text-align:center;color:#8e44ad;font-weight:700}
+.hdl.end,.hdl.hgt{border-radius:2px;cursor:move}
+.nform .ang{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink-3)}
+.nform .ang input[type=range]{flex:1;min-width:70px;margin:0;accent-color:#8e44ad}
+.nform .ang input[type=number]{width:66px;padding:3px 5px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--panel);font-size:12.5px}
+.sw.nuevo{border-color:#8e44ad;background:color-mix(in srgb,#8e44ad 25%,transparent)}
+.badge-new{display:inline-block;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:#8e44ad;border:1px solid #8e44ad;border-radius:999px;padding:0 6px;margin-left:4px;vertical-align:middle}
+.cform textarea,.nform textarea{width:100%;padding:5px 7px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--panel);font-size:12.5px;font-family:inherit;resize:vertical}
 .sw.corr{border-color:#8e44ad;border-style:dashed;background:transparent}.st.corr{background:#8e44ad}
 .pencil{color:#8e44ad;font-size:11px;margin-left:4px}
 .wrap{max-width:1100px;margin:0 auto;padding:28px 22px 60px}
@@ -170,7 +187,7 @@ footer{padding:20px 22px;color:var(--ink-3);font-size:12px;border-top:1px solid 
 <header class="mast">
   <a class="ccd" href="https://comisioncorograficadigital.github.io/" target="_blank" rel="noopener" aria-label="Comisión Corográfica Digital"><svg viewBox="0 0 200 72" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><text y="68" font-family="'Barlow Condensed','Arial Narrow',sans-serif" font-weight="800" font-size="80" fill="currentColor">CC<tspan style="fill:var(--accent)">D</tspan></text></svg><span class="ccd-div" aria-hidden="true"></span><span class="ccd-name" aria-hidden="true"><span>Comisión Corográfica</span><span>Digital</span></span></a>
   <div class="tool"><h1>Lector de topónimos <span class="pil">(piloto)</span></h1><span class="tagline">lectura automática y geocodificación · diez mapas de la Comisión Corográfica</span></div>
-  <div class="credits"><a class="coll" href="https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx" target="_blank" rel="noopener">Mapoteca Digital · Biblioteca Nacional de Colombia</a><span class="dev"><span class="dev-k">Desarrollo</span> Sebastián Díaz Ángel</span></div>
+  <div class="credits"><a class="coll" href="https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx" target="_blank" rel="noopener">Mapoteca Digital · Biblioteca Nacional de Colombia</a><span class="dev" title="Concepción, diseño, fuentes y validación: Sebastián Díaz Ángel; desarrollo asistido por IA (Claude)"><span class="dev-k">Concepción, diseño, fuentes y validación</span> Sebastián Díaz Ángel <span class="dev-ai">· desarrollo asistido por IA (Claude)</span></span></div>
   <nav class="tabs" role="tablist"><button role="tab" id="tab-visor" aria-selected="true">Visor</button><button role="tab" id="tab-informe" aria-selected="false">Informe</button></nav>
 </header>
 <section id="view-visor" class="view">
@@ -188,7 +205,7 @@ footer{padding:20px 22px;color:var(--ink-3);font-size:12px;border-top:1px solid 
         <label><input type="checkbox" data-s="none"><span class="sw none"></span>sin correspondencia</label>
         <label><input type="checkbox" id="only-corr"><span class="sw corr"></span>solo corregidos</label>
       </div>
-      <div class="corrbar"><b id="corr-n">0</b><span>correcciones guardadas<br><span id="corr-where" style="color:var(--ink-3)">…</span></span><span style="margin-left:auto"></span><button id="corr-export" type="button">Exportar correcciones</button><span class="note" id="corr-note" hidden></span></div>
+      <div class="corrbar"><b id="corr-n">0</b><span>correcciones guardadas<br><span id="corr-where" style="color:var(--ink-3)">…</span></span><span style="margin-left:auto"></span><button id="add-topo" type="button" title="Dibuja un rectángulo sobre un rótulo que el lector no detectó y escribe su nombre">＋ Añadir topónimo</button><button id="corr-export" type="button">Exportar JSON</button><button id="corr-issue" type="button" title="Abre un issue en GitHub con las correcciones, para reunirlas en el repositorio">Enviar a GitHub</button><span class="note" id="corr-note" hidden></span></div>
       <div style="position:relative"><div id="geo"></div><div class="legend-geo"><div><i style="border-color:#3b6fd1;border-top-style:dashed"></i>bbox del inventario</div><div><i style="border-color:#2f8a3e"></i>extensión estimada de la imagen</div><div><i style="border-color:#fbb03b"></i>envolvente de topónimos</div></div></div>
       <div class="search"><input id="q" type="search" placeholder="Buscar texto OCR o nombre del gacetero…"></div>
       <div class="list"><table><thead><tr><th>Texto OCR</th><th>Gacetero / corrección</th><th>Score</th><th>Δ km</th></tr></thead><tbody id="rows"></tbody></table></div>
@@ -196,7 +213,7 @@ footer{padding:20px 22px;color:var(--ink-3);font-size:12px;border-top:1px solid 
   </div>
 </section>
 <section id="view-informe" class="view wrap" hidden>__REPORT__</section>
-<footer>Piloto del proyecto <a href="https://comisioncorograficadigital.github.io/" target="_blank" rel="noopener">Comisión Corográfica Digital</a> sobre mapas de la <a href="https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx" target="_blank" rel="noopener">Mapoteca Digital de la Biblioteca Nacional de Colombia</a>. Desarrollo: Sebastián Díaz Ángel. Realizado en CPU con OnnxTR (DB‑ResNet50 + PARSeq), rapidfuzz y un gacetero regional (GeoNames/DANE, Natural Earth, nombres históricos). La imagen se muestra a resolución reducida en las vistas generales y a resolución completa (mosaicos de 1 024 px del archivo original) al acercarse; las coordenadas de píxel de los archivos CSV/GeoJSON están en la resolución original.</footer>
+<footer>Piloto del proyecto <a href="https://comisioncorograficadigital.github.io/" target="_blank" rel="noopener">Comisión Corográfica Digital</a> sobre mapas de la <a href="https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx" target="_blank" rel="noopener">Mapoteca Digital de la Biblioteca Nacional de Colombia</a>. Concepción, diseño, fuentes y validación: Sebastián Díaz Ángel; desarrollo asistido por IA (Claude). Realizado en CPU con OnnxTR (DB‑ResNet50 + PARSeq), rapidfuzz y un gacetero regional (GeoNames/DANE, Natural Earth, nombres históricos). La imagen se muestra a resolución reducida en las vistas generales y a resolución completa (mosaicos de 1 024 px del archivo original) al acercarse; las coordenadas de píxel de los archivos CSV/GeoJSON están en la resolución original.</footer>
 <script>
 const MAPS = __MAPS__;
 const BASE = __BASE__;
@@ -233,6 +250,7 @@ function initMaps(){
   geoMap.setView([6,-75], 5);
 }
 function show(i){
+  if (typeof closeEditor === 'function' && editor) { editor.c = null; closeEditor(); }
   cur = i; const m = MAPS[i];
   document.querySelectorAll('.mapsel button').forEach((b,k) => b.setAttribute('aria-pressed', k===i));
   $('#t-title').textContent = m.meta.title;
@@ -276,6 +294,134 @@ function show(i){
   applyCorrections();
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+const GITHUB_REPO = '__GITHUB_REPO__';
+function predictLL(m, x, y){
+  if (!m.model) return null;
+  if (m.model.poly2) { const Q = m.model.poly2, nx = (x - m.w/2) / m.w, ny = (y - m.h/2) / m.h, f = [1, nx, ny, nx*nx, nx*ny, ny*ny];
+    return [f.reduce((s, fi, k) => s + fi*Q[k][0], 0), f.reduce((s, fi, k) => s + fi*Q[k][1], 0)]; }
+  const M = m.model.affine; return [x*M[0][0] + y*M[1][0] + M[2][0], x*M[0][1] + y*M[1][1] + M[2][1]];
+}
+// ---- adding toponyms the reader missed: draw a box over the label, orient it, then name it ----
+let adding = false, dragStart = null, dragRect = null, dragShift = false, newMarks = {}, editor = null, moving = null, snapDown = false;
+function trackMods(ev){ snapDown = !!(ev.ctrlKey || ev.metaKey); }   // Ctrl (Cmd) while dragging the round handle snaps the angle to 5° steps (Shift is reserved by Leaflet)
+document.addEventListener('keydown', trackMods); document.addEventListener('keyup', trackMods);
+const toLL = ([x, y]) => [-y, x];
+function px(latlng){ return [latlng.lng, -latlng.lat]; }
+function norm180(a){ return ((a + 180) % 360 + 360) % 360 - 180; }
+// box geometry in image pixels (y down): centre, length along the text, height, angle in degrees counter-clockwise (same convention as the reader's phrases)
+function axes(g){ const a = g.ang * Math.PI / 180; return {ux: Math.cos(a), uy: -Math.sin(a), nx: -Math.sin(a), ny: -Math.cos(a)}; }   // u: reading direction; n: towards the top of the letters
+function boxCorners(g){ const {ux, uy, nx, ny} = axes(g), hw = g.w / 2, hh = g.h / 2, P = (s, t) => [g.cx + ux*s + nx*t, g.cy + uy*s + ny*t]; return [P(-hw, hh), P(hw, hh), P(hw, -hh), P(-hw, -hh)]; }   // start-top, end-top, end-bottom, start-bottom
+function envelope(C){ const xs = C.map(p => p[0]), ys = C.map(p => p[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; }
+function geomFromPoly(P){ const [p0, p1, , p3] = P; return {cx: (P[0][0]+P[1][0]+P[2][0]+P[3][0])/4, cy: (P[0][1]+P[1][1]+P[2][1]+P[3][1])/4, w: Math.hypot(p1[0]-p0[0], p1[1]-p0[1]), h: Math.hypot(p3[0]-p0[0], p3[1]-p0[1]), ang: Math.atan2(-(p1[1]-p0[1]), p1[0]-p0[0]) * 180 / Math.PI}; }
+function geomFromBbox(bb){ return {cx: (bb[0]+bb[2])/2, cy: (bb[1]+bb[3])/2, w: bb[2]-bb[0], h: bb[3]-bb[1], ang: 0}; }
+function setAdding(on){
+  adding = on; $('#add-topo').classList.toggle('on', on); $('#img').classList.toggle('adding', on);
+  if (on) { closeEditor(); imgMap.dragging.disable(); imgMap.boxZoom.disable(); imgMap.closePopup(); setNote('Dibuja un rectángulo sobre el rótulo (clic y arrastrar). Con Shift, arrastra a lo largo del rótulo y la caja sale ya girada. Esc para salir.'); }
+  else { imgMap.dragging.enable(); imgMap.boxZoom.enable(); if (dragRect) { dragRect.remove(); dragRect = null; } dragStart = null; setNote(''); }
+}
+function newForm(key, c, editing){
+  c = c || {}; const ang = c.angulo != null ? c.angulo : 0;
+  const geo = c.lon_pred != null ? 'posición estimada ' + fmt(c.lat_pred,3) + '°, ' + fmt(c.lon_pred,3) + '°' : '';
+  return `<form class="nform" data-key="${key}"><div class="k">${c.fecha ? 'Topónimo añadido' : 'Nuevo topónimo'}</div>
+    <input type="text" name="texto" value="${esc(c.texto||'')}" placeholder="texto del rótulo, tal como está escrito" autocomplete="off" required>
+    <div class="row"><select name="tipo">${TIPOS.map(([k,l]) => `<option value="${k}" ${k===(c.tipo||'poblado')?'selected':''}>${l}</option>`).join('')}</select></div>
+    <input type="text" name="gacetero" value="${esc(c.gacetero||'')}" placeholder="nombre actual o normalizado (opcional)" autocomplete="off">
+    <textarea name="nota" rows="2" placeholder="nota (opcional)">${esc(c.nota||'')}</textarea>
+    ${editing ? `<div class="ang"><label>Ángulo</label><input type="range" name="angulo" min="-180" max="180" step="0.5" value="${ang}"><input type="number" name="angn" min="-180" max="180" step="0.5" value="${ang}"><span>°</span></div>
+    <div class="meta">Asa redonda: girar (con Ctrl, de 5 en 5°) · asas cuadradas: largo y alto · arrastra la caja para moverla</div>` : ''}
+    <div class="row"><button type="submit">Guardar</button><button type="button" class="ghost" data-act="cancel">${editing || !c.fecha ? 'Cancelar' : 'Cerrar'}</button>${c.fecha && !editing ? '<button type="button" class="ghost" data-act="geom">Ajustar caja</button><button type="button" class="ghost" data-act="del">Quitar</button>' : ''}</div>
+    <div class="meta"><span class="geo">${geo}${!editing && c.angulo ? ' · ángulo ' + fmt(c.angulo,1) + '°' : ''}</span>${c.fecha ? (geo ? ' · ' : '') + 'guardado ' + (c.fecha||'').slice(0,16).replace('T',' ') : ''}</div></form>`;
+}
+// the box editor: dashed polygon, a round handle to rotate, two square handles for length and height; drag the box to move it
+function openEditor(key, g, c){
+  closeEditor(); const m = MAPS[cur]; if (newMarks[key]) newMarks[key].remove();
+  g.cx = Math.max(0, Math.min(m.w, g.cx)); g.cy = Math.max(0, Math.min(m.h, g.cy)); g.w = Math.max(12, g.w); g.h = Math.max(8, g.h); g.ang = norm180(g.ang || 0);
+  const mk = (cls, size, title) => L.marker([0, 0], {draggable: true, keyboard: false, title, zIndexOffset: 1000, icon: L.divIcon({className: 'hdl ' + cls, iconSize: [size, size], iconAnchor: [size/2, size/2]})}).addTo(imgMap);
+  const ed = editor = {key, g, c, poly: L.polygon(boxCorners(g).map(toLL), {color:'#8e44ad', weight:2, dashArray:'4 3', fillOpacity:.1, fillColor:'#8e44ad'}).addTo(imgMap),
+    link: L.polyline([toLL([g.cx, g.cy]), toLL([g.cx, g.cy])], {color:'#8e44ad', weight:1, dashArray:'2 3', interactive:false}).addTo(imgMap),
+    hRot: mk('rot', 18, 'Girar la caja (con Ctrl, de 5 en 5°)'), hEnd: mk('end', 12, 'Largo de la caja'), hHgt: mk('hgt', 12, 'Alto de la caja'), popup: null};
+  ed.hRot.on('drag', () => { const [x, y] = px(ed.hRot.getLatLng()); let a = Math.atan2(-(x - g.cx), -(y - g.cy)) * 180 / Math.PI; if (snapDown) a = Math.round(a / 5) * 5; g.ang = norm180(a); placeEditor('rot'); });
+  ed.hEnd.on('drag', () => { const [x, y] = px(ed.hEnd.getLatLng()), {ux, uy} = axes(g), sx = g.cx - ux*g.w/2, sy = g.cy - uy*g.w/2; g.w = Math.max(12, (x - sx)*ux + (y - sy)*uy); g.cx = sx + ux*g.w/2; g.cy = sy + uy*g.w/2; placeEditor('end'); });
+  ed.hHgt.on('drag', () => { const [x, y] = px(ed.hHgt.getLatLng()), {nx, ny} = axes(g), tx = g.cx + nx*g.h/2, ty = g.cy + ny*g.h/2; g.h = Math.max(8, -((x - tx)*nx + (y - ty)*ny)); g.cx = tx - nx*g.h/2; g.cy = ty - ny*g.h/2; placeEditor('hgt'); });
+  [ed.hRot, ed.hEnd, ed.hHgt].forEach(h => h.on('dragend', () => placeEditor(null, true)));
+  ed.poly.on('mousedown', e => { L.DomEvent.stop(e.originalEvent); const [x, y] = px(e.latlng); moving = {x, y, cx: g.cx, cy: g.cy}; imgMap.dragging.disable(); $('#img').classList.add('moving'); });
+  const bb = envelope(boxCorners(g));
+  ed.popup = L.popup({closeOnClick: false, autoClose: false, offset: [0, -36], maxWidth: 320}).setLatLng(toLL([(bb[0] + bb[2]) / 2, bb[1]])).setContent(newForm(key, c, true)).openOn(imgMap);
+  ed.popup.on('remove', () => { if (editor === ed) closeEditor(); });
+  placeEditor();
+}
+function closeEditor(){
+  const ed = editor; if (!ed) return; editor = null; moving = null; imgMap.dragging.enable(); $('#img').classList.remove('moving');
+  [ed.poly, ed.link, ed.hRot, ed.hEnd, ed.hHgt].forEach(l => l.remove()); if (ed.popup) ed.popup.remove();
+  if (ed.c && ed.c.fecha) applyCorrections();     // a saved toponym was being adjusted: put its mark back
+}
+function placeEditor(skip, reanchor){
+  const ed = editor; if (!ed) return; const g = ed.g, m = MAPS[cur], {ux, uy, nx, ny} = axes(g);
+  const C = boxCorners(g); ed.poly.setLatLngs(C.map(toLL));
+  const d = 28 / Math.pow(2, imgMap.getZoom());      // the rotation handle sits 28 screen pixels above the top edge
+  const topMid = [g.cx + nx*g.h/2, g.cy + ny*g.h/2], rotP = [topMid[0] + nx*d, topMid[1] + ny*d];
+  if (skip !== 'rot') ed.hRot.setLatLng(toLL(rotP)); if (skip !== 'end') ed.hEnd.setLatLng(toLL([g.cx + ux*g.w/2, g.cy + uy*g.w/2])); if (skip !== 'hgt') ed.hHgt.setLatLng(toLL([g.cx - nx*g.h/2, g.cy - ny*g.h/2]));
+  ed.link.setLatLngs([toLL(topMid), skip === 'rot' ? ed.hRot.getLatLng() : toLL(rotP)]);
+  if (reanchor && ed.popup) { const bb = envelope(C); ed.popup.setLatLng(toLL([(bb[0] + bb[2]) / 2, bb[1]])); }
+  const el = ed.popup && ed.popup.getElement(), f = el && el.querySelector('form.nform');     // the editor's own form (a closing popup of the same key may still be fading out)
+  if (f) { const av = Math.round(g.ang * 2) / 2; if (f.angulo) f.angulo.value = av; if (f.angn && document.activeElement !== f.angn) f.angn.value = av;
+    const ll = predictLL(m, g.cx, g.cy), geo = f.querySelector('.geo'); if (geo) geo.textContent = (ll ? 'posición estimada ' + fmt(ll[1],3) + '°, ' + fmt(ll[0],3) + '° · ' : '') + Math.round(g.w) + '×' + Math.round(g.h) + ' px'; }
+}
+function dragGeom(a, b, shift){
+  const [x0, y0] = px(a), [x1, y1] = px(b);
+  if (shift) { const len = Math.hypot(x1 - x0, y1 - y0); let ang = Math.atan2(-(y1 - y0), x1 - x0) * 180 / Math.PI; if (Math.abs(ang) > 90) ang = norm180(ang + 180);   // dragged from the end of the word: keep the text upright
+    return {cx: (x0 + x1)/2, cy: (y0 + y1)/2, w: len, h: Math.max(16, Math.min(0.25 * len, 160)), ang}; }
+  return {cx: (x0 + x1)/2, cy: (y0 + y1)/2, w: Math.abs(x1 - x0), h: Math.abs(y1 - y0), ang: 0};
+}
+function startDrag(e){ if (!adding) return; dragStart = e.latlng; dragShift = !!(e.originalEvent && e.originalEvent.shiftKey); if (dragRect) dragRect.remove(); dragRect = L.polygon([e.latlng, e.latlng, e.latlng, e.latlng], {color:'#8e44ad', weight:2, dashArray:'4 3', fillOpacity:.1, interactive:false}).addTo(imgMap); L.DomEvent.stop(e.originalEvent); }
+function moveDrag(e){ if (!adding || !dragStart || !dragRect) return; dragShift = dragShift || !!(e.originalEvent && e.originalEvent.shiftKey); const g = dragGeom(dragStart, e.latlng, dragShift); if (g.w > 0 || g.h > 0) dragRect.setLatLngs(boxCorners(g).map(toLL)); }
+function endDrag(e){
+  if (!adding || !dragStart) return;
+  const m = MAPS[cur]; let g = dragGeom(dragStart, e.latlng, dragShift);
+  if (dragShift ? g.w < 20 : (g.w < 20 || g.h < 12)) g = {cx: g.cx, cy: g.cy, w: 240, h: 60, ang: 0};   // a click: default box
+  const key = m.stem + '-n' + Date.now().toString(36);
+  dragStart = null; if (dragRect) { dragRect.remove(); dragRect = null; } adding = false; $('#add-topo').classList.remove('on'); $('#img').classList.remove('adding'); imgMap.dragging.enable(); imgMap.boxZoom.enable(); setNote('');
+  openEditor(key, g, null);
+  setTimeout(() => { const f = document.querySelector('form.nform input[name=texto]'); if (f) f.focus(); }, 50);
+}
+function moveBox(e){ if (!moving || !editor) return; const [x, y] = px(e.latlng); editor.g.cx = moving.cx + x - moving.x; editor.g.cy = moving.cy + y - moving.y; placeEditor(); }
+function endMove(e){ if (!moving) return; if (e && e.latlng && editor) moveBox(e);   /* the canvas throttles mousemove; the release position is exact */ moving = null; imgMap.dragging.enable(); $('#img').classList.remove('moving'); placeEditor(null, true); }
+document.addEventListener('input', ev => {
+  const f = ev.target.closest('form.nform'); if (!f || !editor || editor.key !== f.dataset.key) return; const n = ev.target.name; if (n !== 'angulo' && n !== 'angn') return;
+  const v = parseFloat(ev.target.value); if (isNaN(v)) return; editor.g.ang = norm180(v); if (n === 'angulo' && f.angn) f.angn.value = v; if (n === 'angn' && f.angulo) f.angulo.value = v; placeEditor();
+});
+document.addEventListener('submit', ev => {
+  const f = ev.target.closest('form.nform'); if (!f) return; ev.preventDefault();
+  const key = f.dataset.key; const m = MAPS[cur]; const prev = corr[key] || {}; const ed = (editor && editor.key === key) ? editor : null;
+  if (!f.texto.value.trim()) { f.texto.focus(); return; }
+  let geo = {bbox_px: prev.bbox_px || null, poly_px: prev.poly_px || null, angulo: prev.angulo ?? 0, lon_pred: prev.lon_pred ?? null, lat_pred: prev.lat_pred ?? null};
+  if (ed) { const g = ed.g, poly = boxCorners(g).map(p => [Math.round(p[0]), Math.round(p[1])]), bb = envelope(poly), ll = predictLL(m, g.cx, g.cy);
+    geo = {bbox_px: [Math.max(0, bb[0]), Math.max(0, bb[1]), Math.min(m.w, bb[2]), Math.min(m.h, bb[3])], poly_px: poly, angulo: Math.round(g.ang * 10) / 10, lon_pred: ll ? +ll[0].toFixed(5) : null, lat_pred: ll ? +ll[1].toFixed(5) : null}; }
+  const body = Object.assign({mapa: m.stem, codigo: m.meta.code, i: key.slice(m.stem.length + 1), nuevo: true, ocr: '', texto: f.texto.value.trim(), tipo: f.tipo.value, veredicto: 'nuevo',
+                gacetero: f.gacetero.value.trim(), nota: f.nota.value.trim()}, geo, {autor: uid || null, fecha: new Date().toISOString()});
+  if (ed) { ed.c = null; closeEditor(); }
+  saveCorrection(key, body).then(() => { const lay = newMarks[key]; if (lay) lay.openPopup(); });
+});
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('.nform [data-act]'); if (!b) return; const f = b.closest('form.nform'); const key = f.dataset.key;
+  if (b.dataset.act === 'cancel') { if (editor && editor.key === key) closeEditor(); else imgMap.closePopup(); }
+  if (b.dataset.act === 'del') { imgMap.closePopup(); saveCorrection(key, null, true); }
+  if (b.dataset.act === 'geom') { const c = corr[key]; if (!c) return; openEditor(key, c.poly_px ? geomFromPoly(c.poly_px) : geomFromBbox(c.bbox_px), c); }
+});
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') { if (editor) closeEditor(); else if (adding) setAdding(false); } });
+async function sendToGitHub(){
+  if (!GITHUB_REPO) { setNote('No hay repositorio configurado.'); return; }
+  const rows = Object.values(corr); if (!rows.length) { setNote('No hay correcciones que enviar.'); return; }
+  const chunks = []; let cur_ = [];
+  for (const r of rows) { cur_.push(r); if (JSON.stringify(cur_).length > 5200) { chunks.push(cur_); cur_ = []; } }
+  if (cur_.length) chunks.push(cur_);
+  const links = chunks.map((ch, k) => {
+    const title = `Correcciones de topónimos (${ch.length}) · ${new Date().toISOString().slice(0,10)}` + (chunks.length > 1 ? ` · lote ${k+1}/${chunks.length}` : '');
+    const body = `Correcciones y topónimos nuevos exportados desde el Lector de topónimos.\n\n\`\`\`json\n${JSON.stringify(ch)}\n\`\`\``;
+    return `<a href="https://github.com/${GITHUB_REPO}/issues/new?title=${encodeURIComponent(title)}&labels=correcciones&body=${encodeURIComponent(body)}" target="_blank" rel="noopener">${chunks.length > 1 ? 'Lote ' + (k+1) : 'Abrir el issue'} (${ch.length})</a>`;
+  });
+  const n = $('#corr-note'); n.innerHTML = `Se abre GitHub con el texto listo; solo hay que pulsar «Submit new issue»${chunks.length > 1 ? ' en cada lote' : ''}: ` + links.join(' '); n.hidden = false;
+}
 const TIPOS = [['poblado','lugar poblado'],['rio','río'],['quebrada','quebrada / caño'],['cerro','cerro / alto / páramo'],['region','provincia / cantón / región'],['agua','laguna / ciénaga / golfo / bahía'],['otro','otro']];
 const VEREDICTOS = [['correcto','la lectura es correcta'],['corregido','corregido'],['no-toponimo','no es topónimo (cuadro, nota, graticula)'],['ilegible','ilegible']];
 function ckey(p){ return MAPS[cur].stem + '-' + p.i; }
@@ -326,6 +472,16 @@ function applyCorrections(){
   const m = MAPS[cur]; let n = 0;
   for (const k in corr) if (k.startsWith(m.stem + '-')) n++;
   $('#corr-n').textContent = n + ' / ' + Object.keys(corr).length;
+  // new toponyms of this map
+  Object.values(newMarks).forEach(l => l.remove()); newMarks = {};
+  for (const [k, c] of Object.entries(corr)) {
+    if (!c.nuevo || c.mapa !== m.stem || !(c.poly_px || c.bbox_px)) continue;
+    if (editor && editor.key === k) continue;      // being adjusted: the editor draws it
+    const P = c.poly_px || boxCorners(geomFromBbox(c.bbox_px));
+    const lay = L.polygon(P.map(toLL), {color:'#8e44ad', weight:2, fillOpacity:.12, fillColor:'#8e44ad'});
+    lay.bindPopup(() => newForm(k, corr[k] || c, false), {closeOnClick:false, autoClose:false, maxWidth:320});
+    lay.addTo(imgMap); newMarks[k] = lay;
+  }
   for (const p of m.phrases) { const lay = marks[p.i]; if (!lay) continue; const c = corr[ckey(p)];
     lay.setStyle(c ? {color:'#8e44ad', dashArray:'4 3', weight:2, fillOpacity:0.15, fillColor:'#8e44ad'} : {color: COL[p.s], dashArray:null, weight: p.s==='none'?0.8:1.6, fillOpacity: p.s==='none'?0:0.12, fillColor: COL[p.s]}); }
   renderList();
@@ -362,8 +518,11 @@ function renderList(){
   const onlyCorr = $('#only-corr').checked;
   const rows = m.phrases.filter(p => (onlyCorr ? !!corr[ckey(p)] : on.has(p.s)) && (!q || p.t.toLowerCase().includes(q) || (p.n||'').toLowerCase().includes(q) || ((corr[ckey(p)]||{}).texto||'').toLowerCase().includes(q)))
     .sort((a,b) => order[a.s]-order[b.s] || (b.sc||0)-(a.sc||0));
-  $('#rows').innerHTML = rows.map(p => { const c = corr[ckey(p)]; return `<tr data-i="${p.i}" aria-selected="${selected===p.i}"><td><span class="st ${c?'corr':p.s}"></span><span class="ocr">${esc(p.t)}</span></td><td>${c ? '<span class="pencil">✎</span> ' + esc(c.veredicto==='no-toponimo' ? '— no es topónimo' : c.veredicto==='ilegible' ? '— ilegible' : c.texto) : esc(p.n||'') + (p.hint ? ' <span style="color:#b8651b" title="rótulo de ' + esc(p.hint) + '">(' + esc(p.hint) + ')</span>' : '')}</td><td class="mono">${p.sc!=null?fmt(p.sc,0):''}</td><td class="mono">${p.r!=null?fmt(p.r,1):''}</td></tr>`; }).join('');
-  $('#rows').querySelectorAll('tr').forEach(tr => tr.addEventListener('click', () => selectRow(+tr.dataset.i, true)));
+  const nuevos = Object.entries(corr).filter(([k, c]) => c.nuevo && c.mapa === m.stem && (!q || (c.texto||'').toLowerCase().includes(q) || (c.gacetero||'').toLowerCase().includes(q)));
+  const newRows = nuevos.map(([k, c]) => `<tr data-k="${k}"><td><span class="st corr"></span><span class="ocr">${esc(c.texto)}</span><span class="badge-new">nuevo</span></td><td>${esc(c.gacetero||'')}</td><td class="mono"></td><td class="mono"></td></tr>`).join('');
+  $('#rows').innerHTML = newRows + rows.map(p => { const c = corr[ckey(p)]; return `<tr data-i="${p.i}" aria-selected="${selected===p.i}"><td><span class="st ${c?'corr':p.s}"></span><span class="ocr">${esc(p.t)}</span></td><td>${c ? '<span class="pencil">✎</span> ' + esc(c.veredicto==='no-toponimo' ? '— no es topónimo' : c.veredicto==='ilegible' ? '— ilegible' : c.texto) : esc(p.n||'') + (p.hint ? ' <span style="color:#b8651b" title="rótulo de ' + esc(p.hint) + '">(' + esc(p.hint) + ')</span>' : '')}</td><td class="mono">${p.sc!=null?fmt(p.sc,0):''}</td><td class="mono">${p.r!=null?fmt(p.r,1):''}</td></tr>`; }).join('');
+  $('#rows').querySelectorAll('tr[data-i]').forEach(tr => tr.addEventListener('click', () => selectRow(+tr.dataset.i, true)));
+  $('#rows').querySelectorAll('tr[data-k]').forEach(tr => tr.addEventListener('click', () => { const lay = newMarks[tr.dataset.k]; if (lay) { imgMap.fitBounds(lay.getBounds().pad(6), {maxZoom:1}); lay.openPopup(); } }));
 }
 function selectRow(i, zoom){
   selected = i; document.querySelectorAll('#rows tr').forEach(tr => tr.setAttribute('aria-selected', +tr.dataset.i===i));
@@ -376,7 +535,11 @@ document.querySelectorAll('#filters input[data-s]').forEach(cb => cb.addEventLis
 $('#only-corr').addEventListener('change', renderList);
 $('#q').addEventListener('input', renderList);
 $('#corr-export').addEventListener('click', exportCorrections);
-initMaps(); show(0); initCaps();
+$('#corr-issue').addEventListener('click', sendToGitHub);
+$('#add-topo').addEventListener('click', () => setAdding(!adding));
+initMaps(); imgMap.on('mousedown', startDrag); imgMap.on('mousemove', moveDrag); imgMap.on('mouseup', endDrag);
+imgMap.on('mousemove', moveBox); imgMap.on('mouseup', endMove); imgMap.on('mouseout', endMove); imgMap.on('zoomend', () => placeEditor());
+show(0); initCaps();
 </script>
 </body>
 </html>'''
@@ -409,6 +572,6 @@ def report_html():
 
 leaflet_css = open(S + 'package/dist/leaflet.css').read().replace('</', '<\\/')
 ccdbg = 'data:image/webp;base64,' + __import__('base64').b64encode(open(S + 'ccd/0001-800.webp', 'rb').read()).decode()
-out = page.replace('__LEAFLET_CSS__', leaflet_css).replace('__CCDBG__', ccdbg).replace('__CONTOURS__', contours).replace('__REPORT__', report_html()).replace('__MAPS__', esc(maps)).replace('__BASE__', esc(base)).replace('__PLACES__', esc(places))
-open('./index.html', 'w').write(out)
-print('written ./index.html', round(len(out)/1e6, 2), 'MB')
+out = page.replace('__GITHUB_REPO__', 'sebastiandiaz/lector-toponimos').replace('__LEAFLET_CSS__', leaflet_css).replace('__CCDBG__', ccdbg).replace('__CONTOURS__', contours).replace('__REPORT__', report_html()).replace('__MAPS__', esc(maps)).replace('__BASE__', esc(base)).replace('__PLACES__', esc(places))
+open('/home/claude/piloto-toponimos-bnc.html', 'w').write(out)
+print('written /home/claude/piloto-toponimos-bnc.html', round(len(out)/1e6, 2), 'MB')

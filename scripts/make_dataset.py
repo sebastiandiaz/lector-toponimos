@@ -10,7 +10,8 @@ Outputs:
   dataset/recognition/labels.json            {"<file>": "<text>"}  — the format of doctr/onnxtr recognition datasets (RecognitionDataset)
   dataset/detection/<mapa>.json              word polygons of validated labels, for detection fine-tuning (doctr DetectionDataset format)
   dataset/gacetero_suplemento.csv            names corrected to a form absent from the gazetteer, with the map's predicted lon/lat
-Labels with veredicto "no-toponimo" or "ilegible" are kept out of the recognition set (ilegible) or used as negatives (no-toponimo).
+Labels with veredicto "no-toponimo" or "ilegible" are kept out of the recognition set (ilegible) or used as negatives (no-toponimo);
+new toponyms (nuevo: true, with bbox_px or a rotated poly_px + angulo) count as corrected labels.
 """
 import json, sys, os, math, csv, argparse, unicodedata, re
 from PIL import Image
@@ -35,10 +36,14 @@ for c in rows:
     if c['veredicto'] == 'ilegible': continue
     text = c['ocr'] if c['veredicto'] == 'correcto' else c['texto']
     if not text: continue
-    if c.get('nuevo'):      # a label the reader missed: axis-aligned box drawn by the user, no word polygons
-        x0, y0, x1, y1 = c['bbox_px']
-        ph = {'bbox': [x0, y0, x1, y1], 'angle': 0, 'h': max(8, y1 - y0), 'words': [], 'pred_lon': c.get('lon_pred'), 'pred_lat': c.get('lat_pred')}
-        words['_n'] = {'poly': [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]}; ph['words'] = ['_n']
+    if c.get('nuevo'):      # a label the reader missed: box drawn (and possibly rotated) by the user, no word polygons
+        if c.get('poly_px'):
+            poly = [[float(x), float(y)] for x, y in c['poly_px']]; ang = float(c.get('angulo') or 0)      # corners start-top, end-top, end-bottom, start-bottom; angle CCW like the reader's
+        else:
+            x0, y0, x1, y1 = c['bbox_px']; poly = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]; ang = 0
+        xs, ys = [p[0] for p in poly], [p[1] for p in poly]
+        ph = {'bbox': [min(xs), min(ys), max(xs), max(ys)], 'angle': ang, 'h': max(8, math.hypot(poly[3][0] - poly[0][0], poly[3][1] - poly[0][1])), 'words': ['_n'], 'pred_lon': c.get('lon_pred'), 'pred_lat': c.get('lat_pred')}
+        words['_n'] = {'poly': poly}
     else:
         ph = geo['phrases'][int(i)]
     # straightened crop along the phrase direction: rotate the full-res region around the phrase centre by its angle
@@ -54,12 +59,12 @@ for c in rows:
     rc = region.size[0] / 2
     crop = region.crop((int(rc + min(ss) - m), int(rc + min(ts) - m), int(rc + max(ss) + m), int(rc + max(ts) + m)))
     fn = f'{stem}-{i}.png'
-    if c['veredicto'] in ('correcto', 'corregido'):
+    if c['veredicto'] in ('correcto', 'corregido', 'nuevo'):
         crop.save(a.out + '/recognition/images/' + fn); labels[fn] = text
     det.setdefault(stem, {'img_dimensions': [spot['width'], spot['height']], 'polygons': [], 'negatives': []})
     polys = [words[w]['poly'] for w in ph['words']]
     (det[stem]['negatives'] if c['veredicto'] == 'no-toponimo' else det[stem]['polygons']).extend(polys)
-    if c['veredicto'] == 'corregido' and c.get('tipo') in ('poblado', 'rio', 'quebrada', 'cerro', 'agua', 'region') and norm(text) not in gaznorm:
+    if c['veredicto'] in ('corregido', 'nuevo') and c.get('tipo') in ('poblado', 'rio', 'quebrada', 'cerro', 'agua', 'region') and norm(text) not in gaznorm:
         supp.append([text, c.get('tipo'), ph.get('pred_lon'), ph.get('pred_lat'), stem, c.get('codigo'), c.get('ocr')])
 json.dump(labels, open(a.out + '/recognition/labels.json', 'w'), ensure_ascii=False, indent=1)
 for stem, d in det.items():
