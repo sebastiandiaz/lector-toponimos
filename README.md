@@ -12,9 +12,17 @@ Desarrollo: Sebastián Díaz Ángel.
 coloreado por estado —punto de control, confirmado cerca, río/región, solo léxico, sin correspondencia—, con ficha, formulario de
 corrección, minimapa que compara la caja del inventario con la extensión estimada, y la pestaña **Informe** con resultados, método y evaluación.
 
-Publicado con GitHub Pages, el visor funciona completo salvo por una diferencia: las correcciones se guardan en el navegador de cada
-persona (y se exportan en JSON con el botón «Exportar correcciones»), no en una base compartida. Para reunir correcciones de varias
-personas basta con que cada una exporte su JSON y lo envíe (o lo suba a una carpeta `correcciones/` por *pull request*).
+### Corregir y añadir topónimos
+
+- **Corregir**: clic en cualquier caja → formulario con la transcripción correcta, el tipo y el veredicto (correcta, corregida, no es topónimo, ilegible).
+- **Añadir**: botón «＋ Añadir topónimo», se dibuja un rectángulo sobre un rótulo que el lector no detectó y se escribe su texto
+  (tipo, nombre normalizado y nota opcionales). El visor calcula la posición geográfica estimada con la transformación del mapa.
+- **Guardar**: en claude.ai las correcciones van a la base compartida del artefacto; en GitHub Pages o como archivo local se guardan
+  en el navegador de cada persona. En todos los casos se pueden **exportar en JSON** o **enviar a GitHub** con el botón del mismo
+  nombre, que abre un *issue* de este repositorio con los registros ya escritos (solo hay que pulsar «Submit new issue»).
+- **Reunir**: `python3 scripts/collect_corrections.py` lee los *issues* con la etiqueta `correcciones`, guarda uno por archivo en
+  `correcciones/` y consolida `correcciones/todas.json`; `scripts/make_dataset.py correcciones/todas.json` convierte ese conjunto
+  (correcciones y topónimos nuevos) en recortes y etiquetas para afinar el reconocedor, y en un suplemento del gacetero.
 
 ## Datos (`datos/`)
 

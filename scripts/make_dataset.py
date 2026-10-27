@@ -27,14 +27,20 @@ def norm(s):
 gaznorm = {v for e in gaz for v in e['variants']}
 cache = {}
 for c in rows:
-    stem = c['mapa']; i = int(c['i'])
+    stem = c['mapa']; i = c['i']
     if stem not in cache:
         cache[stem] = (json.load(open(S + f'out/{stem}.json')), json.load(open(S + f'out/{stem}.geocoded.json')), Image.open(S + f'in/{stem}.jpg').convert('RGB'))
     spot, geo, im = cache[stem]
-    words = {w['id']: w for w in spot['words']}; ph = geo['phrases'][i]
+    words = {w['id']: w for w in spot['words']}
     if c['veredicto'] == 'ilegible': continue
     text = c['ocr'] if c['veredicto'] == 'correcto' else c['texto']
     if not text: continue
+    if c.get('nuevo'):      # a label the reader missed: axis-aligned box drawn by the user, no word polygons
+        x0, y0, x1, y1 = c['bbox_px']
+        ph = {'bbox': [x0, y0, x1, y1], 'angle': 0, 'h': max(8, y1 - y0), 'words': [], 'pred_lon': c.get('lon_pred'), 'pred_lat': c.get('lat_pred')}
+        words['_n'] = {'poly': [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]}; ph['words'] = ['_n']
+    else:
+        ph = geo['phrases'][int(i)]
     # straightened crop along the phrase direction: rotate the full-res region around the phrase centre by its angle
     x0, y0, x1, y1 = ph['bbox']; cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     ang = ph.get('angle', 0) or 0; ar = math.radians(ang)
