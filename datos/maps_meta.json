@@ -1,0 +1,152 @@
+{
+ "m01": {
+  "code": "fmapoteca_9_fagn_9",
+  "title": "Mapa Corográfico de la Provincia de Vélez (Codazzi, 1850)",
+  "year": 1850,
+  "scale": "1:340.000",
+  "kind": "manuscrito",
+  "bbox": [
+   -74.3692,
+   5.2872,
+   -72.9959,
+   7.0109
+  ],
+  "mw": "http://mapwarper.net/maps/24617",
+  "short": "Vélez 1850"
+ },
+ "m02": {
+  "code": "fmapoteca_10_fagn_10",
+  "title": "Mapa Corográfico de la Provincia del Socorro (Codazzi, 1850)",
+  "year": 1850,
+  "scale": "1:345.000",
+  "kind": "manuscrito",
+  "bbox": [
+   -73.4855,
+   6.2133,
+   -72.9609,
+   6.845
+  ],
+  "mw": "http://mapwarper.net/maps/24619",
+  "short": "Socorro 1850"
+ },
+ "m03": {
+  "code": "fmapoteca_11_fagn_11",
+  "title": "Mapa Corográfico de la Provincia de Soto (Codazzi, 1851)",
+  "year": 1851,
+  "scale": "1:340.000",
+  "kind": "manuscrito",
+  "bbox": [
+   -74.0918,
+   6.3999,
+   -72.0044,
+   8.3501
+  ],
+  "mw": "http://mapwarper.net/maps/24620",
+  "short": "Soto 1851"
+ },
+ "m04": {
+  "code": "fmapoteca_231_fagn_25",
+  "title": "Carta corográfica del Estado del Cauca (Paz / Ponce de León, 1864-1865)",
+  "year": 1864,
+  "scale": "1:810.000 (inventario: 1:10.000)",
+  "kind": "impreso",
+  "bbox": [
+   -76.5555,
+   4.6759,
+   -73.7429,
+   8.3313
+  ],
+  "mw": "http://mapwarper.net/maps/24660",
+  "short": "Cauca 1864"
+ },
+ "m05": {
+  "code": "fmapoteca_975_figac_7",
+  "title": "Carta Corográfica del Estado de Panamá (Ayala, 1874)",
+  "year": 1874,
+  "scale": "1:810.000",
+  "kind": "impreso",
+  "bbox": [
+   -83.0522,
+   7.2036,
+   -77.1585,
+   9.6478
+  ],
+  "mw": "http://mapwarper.net/maps/20572",
+  "short": "Panamá 1874"
+ },
+ "m06": {
+  "code": "fmapoteca_978_figac_10",
+  "title": "Carta Corográfica del Estado del Magdalena (Paz / Ponce de León, 1864)",
+  "year": 1864,
+  "scale": "1:810.000",
+  "kind": "impreso",
+  "bbox": [
+   -75.002,
+   8.7982,
+   -70.9945,
+   12.9918
+  ],
+  "mw": "http://mapwarper.net/maps/20575",
+  "short": "Magdalena 1864"
+ },
+ "m07": {
+  "code": "fmapoteca_971_figac_3",
+  "title": "Carta Corográfica del Estado de Boyacá (Paz / Ponce de León, 1864)",
+  "year": 1864,
+  "scale": "1:810.000",
+  "kind": "impreso",
+  "bbox": [
+   -74.664,
+   4.1979,
+   -69.8007,
+   7.0556
+  ],
+  "mw": "http://mapwarper.net/maps/20569",
+  "short": "Boyacá 1864"
+ },
+ "m08": {
+  "code": "fmapoteca_970_figac_2",
+  "title": "Carta Corográfica del Estado de Bolívar (Paz / Ponce de León, 1864)",
+  "year": 1864,
+  "scale": "1:810.000",
+  "kind": "impreso",
+  "bbox": [
+   -76.5,
+   7.0,
+   -73.99,
+   11.51
+  ],
+  "mw": "http://mapwarper.net/maps/20568",
+  "short": "Bolívar 1864"
+ },
+ "m09": {
+  "code": "fmapoteca_980_figac_12",
+  "title": "Carta Corográfica del Estado del Magdalena (Ayala, 1871)",
+  "year": 1871,
+  "scale": "1:810.000",
+  "kind": "impreso",
+  "bbox": [
+   -75.002,
+   8.7982,
+   -70.9945,
+   12.9918
+  ],
+  "mw": "http://mapwarper.net/maps/20578",
+  "short": "Magdalena 1871"
+ },
+ "m10": {
+  "code": "fmapoteca_1469_fagn_42",
+  "title": "Mapa Corográfico de la Provincia de Casanare (Codazzi, 1856)",
+  "year": 1856,
+  "scale": "",
+  "kind": "manuscrito",
+  "bbox": [
+   -73.3667,
+   3.9684,
+   -69.5654,
+   6.6919
+  ],
+  "mw": "http://mapwarper.net/maps/16636",
+  "short": "Casanare 1856"
+ }
+}

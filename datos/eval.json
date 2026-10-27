@@ -1,0 +1,52 @@
+{
+ "m02": {
+  "precision": "20/24 (83 %)",
+  "recall": "cajas 34/40 (85 %) · lecturas 15/40 (38 %)",
+  "notes": "Muestra de 24 topónimos confirmados: 20 correctos, 2 dudosos (Palmas/palma → Palmar), 2 errados (rótulo de longitud → Cordillera Oriental; 'Socorro' del cuadro → Provincia). Ventana de 1100×1000 px alrededor de Socorro–San Gil: 40 rótulos visibles, 34 con caja, 15 leídos de forma exacta o casi exacta."
+ },
+ "m03": {
+  "precision": "22/24 (92 %)",
+  "recall": "cajas 43/50 (86 %) · lecturas 14/50 (28 %)",
+  "notes": "Muestra de 24 confirmados: 22 correctos y 2 con el nombre correcto pero el tipo equivocado (quebrada y río asignados al municipio homónimo). Ventana de 1100×1000 px alrededor de Bucaramanga: ~50 rótulos visibles, 43 con caja, 14 legibles sin ayuda del gacetero."
+ },
+ "m01": {
+  "precision": "19/24 (79 %)",
+  "recall": "cajas 45/52 (86 %) · lecturas 12/52 (23 %)",
+  "notes": "Muestra de 24 confirmados: 19 correctos, 2 con nombre correcto y tipo equivocado (R. Oiba → Oiba; 'Hato' y 'Palmar' fundidos en una frase), 3 errados (Mina de cobre de Horta → Río Horta; Páramo Marchán → Sutamarchán; nota de altura → Páramo). Ventana de 1100×1000 px alrededor de Vélez: ~52 rótulos, 45 con caja, 12 legibles; 'Guabatá' quedó sin caja."
+ },
+ "m06": {
+  "precision": "20/24 (83 %)",
+  "recall": "cajas 19/24 (79 %) · lecturas 12/24 (50 %)",
+  "notes": "Impreso desvaído pero en alta resolución: la tipografía grabada se lee mejor que la cursiva (la mitad de los rótulos salen bien). Muestra: 20 correctos, 2 a medias (R. Cesar y R. Tarra asignados al departamento y al municipio homónimos), 2 errados (Ciénaga de Santa Marta → provincia; Potrero de Rafael → San Rafael). Ventana en la Guajira–Perijá, rótulos dispersos sobre papel pardo: 24 visibles, 19 con caja; los ríos finos sin caja (R. Macoa, R. Arguaso)."
+ },
+ "m08": {
+  "precision": "12/14 (86 %)",
+  "recall": "cajas ~45/65 (70 %) · lecturas ~8/65 (12 %)",
+  "notes": "Resolución web (2 076×2 576 px, rótulos de ~8 px). Con normalización de fondo y 3× se detectan la mayoría de los rótulos, pero casi ninguno se lee: solo los grandes (Cartagena, Golfo de Morrosquillo, Islas de San Bernardo) y algunos de cabecera. 10 puntos de control bastan para situar la hoja (error medio 5,4 km = 25 px). Necesita el máster de digitalización."
+ },
+ "m05": {
+  "precision": "14/18 (78 %)",
+  "recall": "lecturas solo de rótulos grandes",
+  "notes": "Resolución web (2 576×1 765 px). Se leen los nombres de distritos, golfos y puntas en tipografía grande (Panamá, David, Las Tablas, Macaracas, Tolé, Burica, Darién); errores: 'Golfo de S. Miguel' → San Miguel (poblado) y 'Saboga' (isla) → Taboga. Error medio 14 km (≈46 px a 298 m/px)."
+ },
+ "m09": {
+  "precision": "13/15 (87 %)",
+  "recall": "lecturas solo de rótulos grandes",
+  "notes": "Resolución web (1 999×2 576 px). Se leen los pueblos del bajo Magdalena en tipografía mayor (Barranquilla, Soledad, Malambo, Sabanagrande, Ponedera, Remolino, Sitionuevo, Cerro de San Antonio, Calamar); un error: 'Sierra Nevada de Santa Marta' → provincia. Error medio 4 km."
+ },
+ "m10": {
+  "precision": "—",
+  "recall": "ilegible a esta resolución",
+  "notes": "Manuscrito en resolución web (2 576×1 554 px) para una hoja muy grande: los rótulos miden ~6 px. Solo se leen el título, la tabla sinóptica y las 'Noticias' del margen; ningún topónimo del mapa queda confirmado y no hay transformación. Es el caso extremo que muestra que la cadena necesita los másteres."
+ },
+ "m07": {
+  "precision": "—",
+  "recall": "ilegible a esta resolución",
+  "notes": "Impreso muy desvaído en resolución web (2 576×1 592 px): apenas 46 palabras, todas del título y la leyenda. Sin topónimos confirmados ni transformación."
+ },
+ "m04": {
+  "precision": "17/24 (71 %) · 23/24 por nombre",
+  "recall": "cajas ~70/90 (78 %) · lecturas ~25/90 (28 %)",
+  "notes": "Impreso denso en alta resolución (4 573×8 000 px, ampliado 1,5× y normalizado): el mapa con más puntos de control (53). Seis de los 24 de la muestra tienen el nombre correcto pero son rótulos de río, laguna, isla o volcán asignados al poblado homónimo (R. Sonsón, Lag. Tola, Isla Juradó, Volcán de Cumbal, R. Bojayá, R. Atrato); un error de nombre (Ipiales → Pupiales). La extensión estimada (−81,0…−73,8 / −0,5…9,6) desmiente la caja del inventario (−76,6…−73,7 / 4,7…8,3), que no corresponde a esta hoja."
+ }
+}
