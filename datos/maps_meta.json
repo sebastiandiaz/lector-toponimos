@@ -12,7 +12,8 @@
    7.0109
   ],
   "mw": "http://mapwarper.net/maps/24617",
-  "short": "Vélez 1850"
+  "short": "Vélez 1850",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m02": {
   "code": "fmapoteca_10_fagn_10",
@@ -27,7 +28,8 @@
    6.845
   ],
   "mw": "http://mapwarper.net/maps/24619",
-  "short": "Socorro 1850"
+  "short": "Socorro 1850",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m03": {
   "code": "fmapoteca_11_fagn_11",
@@ -42,7 +44,8 @@
    8.3501
   ],
   "mw": "http://mapwarper.net/maps/24620",
-  "short": "Soto 1851"
+  "short": "Soto 1851",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m04": {
   "code": "fmapoteca_231_fagn_25",
@@ -57,7 +60,8 @@
    8.3313
   ],
   "mw": "http://mapwarper.net/maps/24660",
-  "short": "Cauca 1864"
+  "short": "Cauca 1864",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m05": {
   "code": "fmapoteca_975_figac_7",
@@ -72,7 +76,8 @@
    9.6478
   ],
   "mw": "http://mapwarper.net/maps/20572",
-  "short": "Panamá 1874"
+  "short": "Panamá 1874",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m06": {
   "code": "fmapoteca_978_figac_10",
@@ -87,7 +92,8 @@
    12.9918
   ],
   "mw": "http://mapwarper.net/maps/20575",
-  "short": "Magdalena 1864"
+  "short": "Magdalena 1864",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m07": {
   "code": "fmapoteca_971_figac_3",
@@ -102,7 +108,8 @@
    7.0556
   ],
   "mw": "http://mapwarper.net/maps/20569",
-  "short": "Boyacá 1864"
+  "short": "Boyacá 1864",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m08": {
   "code": "fmapoteca_970_figac_2",
@@ -117,7 +124,8 @@
    11.51
   ],
   "mw": "http://mapwarper.net/maps/20568",
-  "short": "Bolívar 1864"
+  "short": "Bolívar 1864",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m09": {
   "code": "fmapoteca_980_figac_12",
@@ -132,7 +140,8 @@
    12.9918
   ],
   "mw": "http://mapwarper.net/maps/20578",
-  "short": "Magdalena 1871"
+  "short": "Magdalena 1871",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  },
  "m10": {
   "code": "fmapoteca_1469_fagn_42",
@@ -147,6 +156,7 @@
    6.6919
   ],
   "mw": "http://mapwarper.net/maps/16636",
-  "short": "Casanare 1856"
+  "short": "Casanare 1856",
+  "fuente": "Mapoteca Digital, Biblioteca Nacional de Colombia"
  }
 }

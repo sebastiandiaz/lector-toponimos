@@ -1,10 +1,11 @@
-# Lector de topónimos (piloto)
+# Nomenclátor de la Comisión Corográfica (piloto)
 
-Lectura automática y geocodificación de topónimos en diez mapas de la Comisión Corográfica (1850–1874) de la
-[Mapoteca Digital de la Biblioteca Nacional de Colombia](https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx),
-un piloto del proyecto [Comisión Corográfica Digital](https://comisioncorograficadigital.github.io/).
+Lectura automática y geocodificación de topónimos en los mapas de la Comisión Corográfica, herramienta del proyecto
+[Comisión Corográfica Digital](https://comisioncorograficadigital.github.io/) para los mapas de sus entidades aliadas. En esta fase piloto: diez hojas (1850–1874) de la
+[Mapoteca Digital de la Biblioteca Nacional de Colombia](https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx).
+Visor en línea: https://sebastiandiaz.github.io/lector-toponimos/
 
-Desarrollo: Sebastián Díaz Ángel.
+Concepción, diseño, fuentes y validación: Sebastián Díaz Ángel; desarrollo asistido por IA (Claude).
 
 ## El visor
 
@@ -35,7 +36,7 @@ corrección, minimapa que compara la caja del inventario con la extensión estim
 - `<mapa>.geojson` — topónimos confirmados (puntos) y extensión estimada de la imagen (polígono).
 - `<mapa>.gcps.csv` — puntos de control `x, y, lon, lat` listos para importar en Map Warper.
 - `toponimos_confirmados.csv` — tabla consolidada de los 287 topónimos confirmados en los diez mapas.
-- `maps_meta.json` — correspondencia mapa ↔ registro del inventario (código, título, caja, escala, Map Warper).
+- `maps_meta.json` — correspondencia mapa ↔ registro del inventario (entidad de procedencia, código, título, caja, escala, Map Warper).
 - `eval.json` — evaluación visual por mapa. `gazetteer.json` — gacetero regional (2 460 entradas).
 
 Mapas: Vélez 1850, Socorro 1850, Soto 1851 (Codazzi, manuscritos); Cauca 1864, Magdalena 1864, Boyacá 1864, Bolívar 1864

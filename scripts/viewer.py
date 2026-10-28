@@ -61,8 +61,8 @@ page = r'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lector de topónimos (piloto)</title>
-<meta name="description" content="Lectura automática de topónimos y geocodificación de diez mapas de la Comisión Corográfica (Mapoteca Digital, BNC)">
+<title>Nomenclátor de la Comisión Corográfica (piloto)</title>
+<meta name="description" content="Nomenclátor de la Comisión Corográfica (piloto): lectura automática y geocodificación de topónimos en los mapas de la Comisión Corográfica, proyecto Comisión Corográfica Digital">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>__LEAFLET_CSS__</style>
@@ -86,10 +86,10 @@ a{color:var(--accent-text)}button,input,select{font:inherit;color:inherit}:focus
 .ccd-div{width:1px;height:26px;background:var(--accent);opacity:.5;flex-shrink:0}
 .ccd-name{display:flex;flex-direction:column;font-family:var(--font-ui);text-transform:uppercase;font-size:10px;letter-spacing:2px;line-height:1.5}
 .ccd-name span:first-child{font-weight:600;color:var(--ink)}.ccd-name span:last-child{font-weight:300;color:var(--ink-3)}
-.tool{display:flex;align-items:baseline;gap:12px;flex:1 1 auto;min-width:0;padding-left:20px;border-left:1px solid var(--line)}
-.tool h1{font-family:var(--font-display);font-weight:800;font-size:30px;margin:0;line-height:1;letter-spacing:-.01em;white-space:nowrap;color:var(--ink)}
+.tool{display:flex;flex-direction:column;align-items:flex-start;gap:3px;flex:1 1 auto;min-width:0;padding-left:20px;border-left:1px solid var(--line)}
+.tool h1{font-family:var(--font-display);font-weight:800;font-size:26px;margin:0;line-height:1;letter-spacing:-.01em;white-space:nowrap;color:var(--ink);max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .tool h1 .pil{font-weight:600;color:var(--ink-3);font-size:.72em;letter-spacing:0}
-.tool .tagline{font-size:12.5px;color:var(--ink-3);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tool .tagline{font-size:12.5px;color:var(--ink-3);white-space:nowrap;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .credits{margin-left:8px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
 .coll{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3);text-decoration:none;white-space:nowrap}
 .coll:hover{color:var(--accent)}
@@ -100,9 +100,9 @@ a{color:var(--accent-text)}button,input,select{font:inherit;color:inherit}:focus
 .tabs{display:flex;gap:2px}
 .tabs button{border:0;background:none;padding:8px 10px;border-bottom:2px solid transparent;color:var(--ink-3);cursor:pointer;font-family:var(--font-ui);font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;line-height:1.1}
 .tabs button:hover{color:var(--accent)}.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
-@media (max-width:1400px){.coll{display:none}}
+@media (max-width:1600px){.coll{display:none}}
 @media (max-width:980px){.dev{font-size:10.5px}}
-@media (max-width:980px){.tool .tagline{display:none}}
+@media (max-width:1250px){.tool h1{font-size:22px;white-space:normal;line-height:1.08;overflow:visible}.tool .tagline{display:none}}
 @media (max-width:760px){.mast{gap:6px 12px;padding:8px 14px;flex-wrap:wrap}.ccd-name{display:none}.ccd svg{height:28px}.tool{padding-left:12px}.tool h1{font-size:22px}.credits{order:3;margin-left:0;align-items:flex-start;text-align:left;max-width:100%}.dev{align-items:flex-start;white-space:normal}.dev-k{font-size:8.5px;letter-spacing:1.1px}.tabs{margin-left:auto;flex-shrink:0;order:4}.tabs button{padding:6px 8px}}
 .mapsel{display:flex;gap:6px;flex-wrap:wrap;padding:10px 22px;background:var(--panel);border-bottom:1px solid var(--line)}
 .mapsel button{border:1px solid var(--line-strong);background:var(--panel);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:12.5px;color:var(--ink)}
@@ -186,8 +186,8 @@ footer{padding:20px 22px;color:var(--ink-3);font-size:12px;border-top:1px solid 
 <body>
 <header class="mast">
   <a class="ccd" href="https://comisioncorograficadigital.github.io/" target="_blank" rel="noopener" aria-label="Comisión Corográfica Digital"><svg viewBox="0 0 200 72" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><text y="68" font-family="'Barlow Condensed','Arial Narrow',sans-serif" font-weight="800" font-size="80" fill="currentColor">CC<tspan style="fill:var(--accent)">D</tspan></text></svg><span class="ccd-div" aria-hidden="true"></span><span class="ccd-name" aria-hidden="true"><span>Comisión Corográfica</span><span>Digital</span></span></a>
-  <div class="tool"><h1>Lector de topónimos <span class="pil">(piloto)</span></h1><span class="tagline">lectura automática y geocodificación · diez mapas de la Comisión Corográfica</span></div>
-  <div class="credits"><a class="coll" href="https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx" target="_blank" rel="noopener">Mapoteca Digital · Biblioteca Nacional de Colombia</a><span class="dev" title="Concepción, diseño, fuentes y validación: Sebastián Díaz Ángel; desarrollo asistido por IA (Claude)"><span class="dev-k">Concepción, diseño, fuentes y validación</span> Sebastián Díaz Ángel <span class="dev-ai">· desarrollo asistido por IA (Claude)</span></span></div>
+  <div class="tool"><h1>Nomenclátor de la Comisión Corográfica <span class="pil">(piloto)</span></h1><span class="tagline">lectura automática y geocodificación de topónimos en los mapas de la Comisión</span></div>
+  <div class="credits"><a class="coll" href="https://comisioncorograficadigital.github.io/" target="_blank" rel="noopener">Comisión Corográfica Digital · entidades aliadas</a><span class="dev" title="Concepción, diseño, fuentes y validación: Sebastián Díaz Ángel; desarrollo asistido por IA (Claude)"><span class="dev-k">Concepción, diseño, fuentes y validación</span> Sebastián Díaz Ángel <span class="dev-ai">· desarrollo asistido por IA (Claude)</span></span></div>
   <nav class="tabs" role="tablist"><button role="tab" id="tab-visor" aria-selected="true">Visor</button><button role="tab" id="tab-informe" aria-selected="false">Informe</button></nav>
 </header>
 <section id="view-visor" class="view">
@@ -213,7 +213,7 @@ footer{padding:20px 22px;color:var(--ink-3);font-size:12px;border-top:1px solid 
   </div>
 </section>
 <section id="view-informe" class="view wrap" hidden>__REPORT__</section>
-<footer>Piloto del proyecto <a href="https://comisioncorograficadigital.github.io/" target="_blank" rel="noopener">Comisión Corográfica Digital</a> sobre mapas de la <a href="https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx" target="_blank" rel="noopener">Mapoteca Digital de la Biblioteca Nacional de Colombia</a>. Concepción, diseño, fuentes y validación: Sebastián Díaz Ángel; desarrollo asistido por IA (Claude). Realizado en CPU con OnnxTR (DB‑ResNet50 + PARSeq), rapidfuzz y un gacetero regional (GeoNames/DANE, Natural Earth, nombres históricos). La imagen se muestra a resolución reducida en las vistas generales y a resolución completa (mosaicos de 1 024 px del archivo original) al acercarse; las coordenadas de píxel de los archivos CSV/GeoJSON están en la resolución original.</footer>
+<footer>Nomenclátor: piloto del proyecto <a href="https://comisioncorograficadigital.github.io/" target="_blank" rel="noopener">Comisión Corográfica Digital</a> con mapas de las entidades aliadas; en esta fase, diez hojas de la <a href="https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx" target="_blank" rel="noopener">Mapoteca Digital de la Biblioteca Nacional de Colombia</a>. Concepción, diseño, fuentes y validación: Sebastián Díaz Ángel; desarrollo asistido por IA (Claude). Realizado en CPU con OnnxTR (DB‑ResNet50 + PARSeq), rapidfuzz y un gacetero regional (GeoNames/DANE, Natural Earth, nombres históricos). La imagen se muestra a resolución reducida en las vistas generales y a resolución completa (mosaicos de 1 024 px del archivo original) al acercarse; las coordenadas de píxel de los archivos CSV/GeoJSON están en la resolución original.</footer>
 <script>
 const MAPS = __MAPS__;
 const BASE = __BASE__;
@@ -255,7 +255,7 @@ function show(i){
   document.querySelectorAll('.mapsel button').forEach((b,k) => b.setAttribute('aria-pressed', k===i));
   $('#t-title').textContent = m.meta.title;
   const s = m.summary;
-  $('#t-sub').innerHTML = `Registro <span class="mono">${m.meta.code}</span> · ${m.meta.kind} · escala ${m.meta.scale||'s. e.'} · imagen ${s.width}×${s.height} px · lectura ${fmt(s.spot_seconds/60,0)} min`;
+  $('#t-sub').innerHTML = `${esc(m.meta.fuente||'Mapoteca Digital, Biblioteca Nacional de Colombia')} · registro <span class="mono">${m.meta.code}</span> · ${m.meta.kind} · escala ${m.meta.scale||'s. e.'} · imagen ${s.width}×${s.height} px · lectura ${fmt(s.spot_seconds/60,0)} min`;
   const inv = s.inventory_bbox, ext = s.image_extent, top = s.toponym_extent;
   const cards = [[s.n_words,'palabras leídas'],[s.n_phrases,'rótulos (frases)'],[s.n_gcp+s.n_near,'topónimos confirmados'],[s.n_area,'ríos / regiones'],[s.n_lexical_only,'solo léxicos'],[s.n_gcp,'puntos de control'],
     [s.rmse_km!=null?fmt(s.rmse_km,2)+' km':'—','error medio (RMSE)'],[s.m_per_px?fmt(s.m_per_px,0)+' m':'—','metros por píxel'],[s.rotation_deg!=null?fmt(s.rotation_deg,1)+'°':'—','giro del norte']];
@@ -417,7 +417,7 @@ async function sendToGitHub(){
   if (cur_.length) chunks.push(cur_);
   const links = chunks.map((ch, k) => {
     const title = `Correcciones de topónimos (${ch.length}) · ${new Date().toISOString().slice(0,10)}` + (chunks.length > 1 ? ` · lote ${k+1}/${chunks.length}` : '');
-    const body = `Correcciones y topónimos nuevos exportados desde el Lector de topónimos.\n\n\`\`\`json\n${JSON.stringify(ch)}\n\`\`\``;
+    const body = `Correcciones y topónimos nuevos exportados desde el Nomenclátor de la Comisión Corográfica.\n\n\`\`\`json\n${JSON.stringify(ch)}\n\`\`\``;
     return `<a href="https://github.com/${GITHUB_REPO}/issues/new?title=${encodeURIComponent(title)}&labels=correcciones&body=${encodeURIComponent(body)}" target="_blank" rel="noopener">${chunks.length > 1 ? 'Lote ' + (k+1) : 'Abrir el issue'} (${ch.length})</a>`;
   });
   const n = $('#corr-note'); n.innerHTML = `Se abre GitHub con el texto listo; solo hay que pulsar «Submit new issue»${chunks.length > 1 ? ' en cada lote' : ''}: ` + links.join(' '); n.hidden = false;
