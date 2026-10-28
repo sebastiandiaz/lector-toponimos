@@ -1,6 +1,6 @@
-# Nomenclátor de la Comisión Corográfica (piloto)
+# Nomenclátor (piloto): lector de topónimos en mapas antiguos
 
-Lectura automática y geocodificación de topónimos en los mapas de la Comisión Corográfica, herramienta del proyecto
+Lectura automática y geocodificación de topónimos, herramienta del proyecto
 [Comisión Corográfica Digital](https://comisioncorograficadigital.github.io/) para los mapas de sus entidades aliadas. En esta fase piloto: diez hojas (1850–1874) de la
 [Mapoteca Digital de la Biblioteca Nacional de Colombia](https://www.bibliotecanacional.gov.co/es-co/colecciones/biblioteca-digital/mapoteca/Paginas/index.aspx).
 Visor en línea: https://sebastiandiaz.github.io/lector-toponimos/
